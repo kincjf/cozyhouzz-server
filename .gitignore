@@ -41,3 +41,4 @@ public/__build__/**
 
 build/
 resources/
+db.development.sqlite
