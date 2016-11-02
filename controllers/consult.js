@@ -249,3 +249,43 @@ exports.consultingDetail = function(req, res) {
     }
   });
 }
+
+// 컨설팅 정보 삭제
+exports.consultingDelete = function(req, res) {
+
+  const consultDataIdx = req.params.consultDataIdx;
+  
+  return Consult.findOne({
+    where: {
+      idx: consultDataIdx
+    }
+  }).then(function(consult) { // 다른 회원의 내용일 경우 열람 불가능
+    if (req.user.idx != consult.memberIdx) {
+      return res.status(400).send("다른 회원");
+    }
+
+    return Consult.destroy({
+      where: {
+        idx: consultDataIdx
+      }
+    }).then(function() {
+      return res.status(200).send("삭제하였습니다.");
+    }).catch(function(err) {
+      if (err) {
+        return res.status(400).json({
+          errorMsg: '삭제 실패',
+          statusCode: -1
+        });
+      }
+    });
+  }).catch(function(err) {
+    console.log(err);
+    if (err) {
+      return res.status(400).json({
+        errorMsg: '정보 없음',
+        err: err,
+        statusCode: -1
+      });
+    }
+  });
+}
