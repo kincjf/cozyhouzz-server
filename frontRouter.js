@@ -207,6 +207,9 @@ module.exports = function(app) {
   // modify consulting information
   consultRoutes.put('/:consultDataIdx', requireAuth, ConsultController.consultingModify);
 
+  // delete consulting information
+  consultRoutes.delete('/:consultDataIdx', requireAuth, ConsultController.consultingDelete);
+
   // Set url for API group routes
   app.use('/api', apiRoutes);
 };
