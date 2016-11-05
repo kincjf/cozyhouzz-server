@@ -9,6 +9,8 @@ const models = require('../models');
 const Member = models.Member;
 const BusinessMember = models.BusinessMember;
 
+const BIZMEMBER = 2;
+
 // statusCode, memberType, uploadPath등
 const staticValue = require('../utils/staticValue');
 
