@@ -1,0 +1,107 @@
+/* jshint indent: 2 */
+
+module.exports = function(sequelize, DataTypes) {
+  return sequelize.define('RoomInfoBoard', {
+    idx: {
+      type: DataTypes.INTEGER(11),
+      allowNull: false,
+      primaryKey: true
+    },
+    memberIdx: {
+      type: DataTypes.INTEGER(10),
+      allowNull: false,
+      references: {
+        model: 'Member',
+        key: 'idx'
+      }
+    },
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    deposit: {
+      type: DataTypes.INTEGER(11),
+      allowNull: true
+    },
+    roomType: {
+      type: DataTypes.INTEGER(11),
+      allowNull: true
+    },
+    monthlyRentFee: {
+      type: DataTypes.INTEGER(11),
+      allowNull: true
+    },
+    floor: {
+      type: DataTypes.INTEGER(11),
+      allowNull: true
+    },
+    manageExpense: {
+      type: DataTypes.INTEGER(11),
+      allowNull: true
+    },
+    manageService: {
+      type: DataTypes.STRING(200),
+      allowNull: true
+    },
+    areaSize: {
+      type: DataTypes.INTEGER(11),
+      allowNull: true
+    },
+    actualSize: {
+      type: DataTypes.INTEGER(11),
+      allowNull: true
+    },
+    Parking: {
+      type: DataTypes.INTEGER(11),
+      allowNull: true
+    },
+    Elevator: {
+      type: DataTypes.INTEGER(11),
+      allowNull: true
+    },
+    supplyOption: {
+      type: DataTypes.STRING(500),
+      allowNull: true
+    },
+    availableDate: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: 'CURRENT_TIMESTAMP'
+    },
+    HTMLText: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    address: {
+      type: DataTypes.STRING(500),
+      allowNull: true
+    },
+    locationInfo: {
+      type: DataTypes.STRING(1000),
+      allowNull: true
+    },
+    VRImages: {
+      type: DataTypes.STRING(2000),
+      allowNull: true
+    },
+    mainPreviewImage: {
+      type: DataTypes.STRING(1000),
+      allowNull: true
+    },
+    coordinate: {
+      type: DataTypes.STRING(1000),
+      allowNull: true
+    },
+    regionCategory: {
+      type: DataTypes.STRING(1000),
+      allowNull: true
+    },
+    initWriteDate: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: 'CURRENT_TIMESTAMP'
+    }
+  }, {
+    tableName: 'RoomInfoBoard'
+  });
+};

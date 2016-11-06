@@ -16,7 +16,7 @@ module.exports = function(sequelize, DataTypes) {
         key: 'idx'
       },
       onUpdate: "CASCADE",
-      onDelete: "SET NULL"
+      onDelete: "CASCADE"
     },
     title: {
       type: DataTypes.STRING(200),
