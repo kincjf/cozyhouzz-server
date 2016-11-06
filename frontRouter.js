@@ -12,6 +12,7 @@ const passport = require('passport'),
   ConsultController = require('./controllers/consult'),
   BuildCaseController = require('./controllers/build-case'),
   BizStoreController = require('./controllers/biz-store'),
+  RoomInfoController = require('./controllers/room-info'),
 
   // ChatController = require('./controllers/chat'),
   // CommunicationController = require('./controllers/communication'),
@@ -43,7 +44,8 @@ module.exports = function(app) {
     userRoutes = express.Router(),
     consultRoutes = express.Router(),
     buildCaseRoutes = express.Router(),
-    bizStoreRoutes = express.Router();
+    bizStoreRoutes = express.Router(),
+    roomInfoRoutes = express.Router();
 
   // chatRoutes = express.Router(),
   // payRoutes = express.Router(),
@@ -209,6 +211,13 @@ module.exports = function(app) {
 
   // delete consulting information
   consultRoutes.delete('/:consultDataIdx', requireAuth, ConsultController.consultingDelete);
+
+  //=========================
+  // Room Info Routes
+  //=========================
+  apiRoutes.use('/room', roomInfoRoutes);
+
+  roomInfoRoutes.get('/list', RoomInfoController.viewRoomInfoList);
 
   // Set url for API group routes
   app.use('/api', apiRoutes);
