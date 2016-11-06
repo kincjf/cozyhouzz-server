@@ -19,9 +19,14 @@ const uploadPath = {
 
 };
 
+const fieldName = {
+  prevImg: "previewImage",
+  vrImg: "vrImage"
+}
 
 module.exports = {
   statusCode,
   memberType,
-  uploadPath
+  uploadPath,
+  fieldName
 };
