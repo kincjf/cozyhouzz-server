@@ -221,7 +221,7 @@ module.exports = function(app) {
 
   roomInfoRoutes.put('/:roomInfoIdx', RoomInfoController.modifyRoomInfo);
 
-  roomInfoRoutes.delete('/:roomInfoIdx', RoomInfoController.deleteRoomInfo);
+  roomInfoRoutes.delete('/:roomInfoIdx', requireAuth, RoomInfoController.deleteRoomInfo);
 
   roomInfoRoutes.get('/:roomInfoIdx', RoomInfoController.viewRoomInfoDetail);
 
