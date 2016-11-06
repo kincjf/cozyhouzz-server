@@ -74,7 +74,10 @@ exports.consultingCounsel = function(req, res) {
       status: 1
     });
   }).catch(function(err) {
-    return res.status(400).send("Err"); // DB Insert Error
+    return res.status(400).json({
+          errorMsg: 'Err',
+          statusCode: -1
+        });
   });
 }
 
@@ -137,7 +140,10 @@ exports.consultingModify = function(req, res) {
       // 회원 IDX비교하여
       // 자신의 정보만 수정 가능하도록함
       if (result.memberIdx != req.user.idx) {
-        return res.status(400).send("다른 회원정보");
+        return res.status(400).json({
+          errorMsg: '다른 회원정보',
+          statusCode: -1
+        });
       }
 
       // DB Update Query
@@ -150,13 +156,22 @@ exports.consultingModify = function(req, res) {
           status: 1
         });
       }).catch(function(err) { // DB update error
-        return res.status(400).send("Update Error");
+        return res.status(400).json({
+          errorMsg: 'Update Error',
+          statusCode: -1
+        });
       });
     } else { // 값이 존재하지 않음
-      return res.status(400).send("정보를 찾을수 없음");
+      return res.status(400).json({
+        errorMsg: '정보를 찾을수 없음',
+        statusCode: -1
+      });
     }
   }).catch(function(err) { // DB select error
-    return res.status(400).send("DB Error");
+    return res.status(400).json({
+      errorMsg: 'DB Error',
+      statusCode: -1
+    });
   });
 }
 
@@ -236,11 +251,56 @@ exports.consultingDetail = function(req, res) {
     }
   }).then(function(consult) { // 다른 회원의 내용일 경우 열람 불가능
     if (req.user.idx != consult.memberIdx) {
-      return res.status(400).send("다른 회원");
+      return res.status(400).json({
+          errorMsg: '다른 회원',
+          statusCode: -1
+        });
     }
 
     return res.status(200).json({ consult, statusCode: 1 });
   }).catch(function(err) {
+    if (err) {
+      return res.status(400).json({
+        errorMsg: '정보 없음',
+        statusCode: -1
+      });
+    }
+  });
+}
+
+// 컨설팅 정보 삭제
+exports.consultingDelete = function(req, res) {
+
+  const consultDataIdx = req.params.consultDataIdx;
+  
+  return Consult.findOne({
+    where: {
+      idx: consultDataIdx
+    }
+  }).then(function(consult) { // 다른 회원의 내용일 경우 열람 불가능
+    if (req.user.idx != consult.memberIdx) {
+      return res.status(400).json({
+          errorMsg: '다른 회원',
+          statusCode: -1
+        });
+    }
+
+    return Consult.destroy({
+      where: {
+        idx: consultDataIdx
+      }
+    }).then(function() {
+      return res.status(200).json({ statusCode: 1 });
+    }).catch(function(err) {
+      if (err) {
+        return res.status(400).json({
+          errorMsg: '삭제 실패',
+          statusCode: -1
+        });
+      }
+    });
+  }).catch(function(err) {
+    console.log(err);
     if (err) {
       return res.status(400).json({
         errorMsg: '정보 없음',
