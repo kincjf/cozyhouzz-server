@@ -51,11 +51,11 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER(11),
       allowNull: true
     },
-    Parking: {
+    parking: {
       type: DataTypes.INTEGER(11),
       allowNull: true
     },
-    Elevator: {
+    elevator: {
       type: DataTypes.INTEGER(11),
       allowNull: true
     },
@@ -66,7 +66,7 @@ module.exports = function(sequelize, DataTypes) {
     availableDate: {
       type: DataTypes.DATE,
       allowNull: true,
-      defaultValue: 'CURRENT_TIMESTAMP'
+      defaultValue: sequelize.NOW
     },
     HTMLText: {
       type: DataTypes.TEXT,
@@ -86,7 +86,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     mainPreviewImage: {
       type: DataTypes.STRING(1000),
-      allowNull: true
+      allowNull: false
     },
     coordinate: {
       type: DataTypes.STRING(1000),
@@ -99,7 +99,7 @@ module.exports = function(sequelize, DataTypes) {
     initWriteDate: {
       type: DataTypes.DATE,
       allowNull: true,
-      defaultValue: 'CURRENT_TIMESTAMP'
+      defaultValue: sequelize.NOW
     }
   }, {
     tableName: 'RoomInfoBoard'

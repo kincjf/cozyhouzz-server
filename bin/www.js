@@ -13,7 +13,7 @@ var server;
 app.set('port', normalizePort(process.env.PORT || config.serverPort));
 
 // If force: true it will first drop tables before recreating them.
-models.sequelize.sync({ logging: console.log /**force: true **/ }).then(function () {
+models.sequelize.sync({ logging: console.log, force: true }).then(function () {
   /**
    * Listen on provided port, on all network interfaces.
    */
@@ -53,6 +53,9 @@ function setTestDatabase(testDB) {
       debug('create UserConsultInfoBoard Test Database');
       return models.UserConsultInfoBoard.bulkCreate(testDB.userConsultInfoBoard);
     }).then(function() {
+      debug('create RoomInfoBoard Test Database');
+      return models.RoomInfoBoard.bulkCreate(testDB.roomInfoBoard);
+    }).then(function() {
       debug('Complete create Test Database');
       return models.sequelize.Promise.resolve('Complete create Test Database');
     }).catch(function(err) {
@@ -62,6 +65,18 @@ function setTestDatabase(testDB) {
   } else {
     return models.sequelize.Promise.reject('no testDB is found');
   }
+
+  // if(testDB) {
+  //   models.RoomInfoBoard.bulkCreate(testDB.roomInfoBoard).then(function() {
+  //     debug('create RoomInfoBoard Test Database');
+  //     return models.sequelize.Promise.resolve('Complete create Test Database');
+  //   }).catch(function(err) {
+  //     debug('create Test Database Error ' + err);
+  //     return models.sequelize.Promise.reject(err);
+  //   });
+  // } else {
+  //   return models.sequelize.Promise.reject('no testDB is found');
+  // }
 }
 
 
