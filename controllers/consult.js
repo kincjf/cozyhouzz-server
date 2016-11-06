@@ -189,6 +189,13 @@ exports.consultingList = function(req, res) {
     pageStartIndex = _.toNumber(req.query.pageStartIndex);
   }
 
+  if (pageStartIndex < 0) {
+    return res.status(400).json({
+      errorMsg: '시작 값은 음수가 될 수 없습니다.',
+      statusCode: -1
+    });
+  }
+
   // ex> pageSize가 10이고, pageStartIndex가 10이면
   // return 데이터(Index 기준)는 10~19, 총 10개이다.
   return Consult.findAll({
