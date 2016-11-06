@@ -217,7 +217,15 @@ module.exports = function(app) {
   //=========================
   apiRoutes.use('/room', roomInfoRoutes);
 
-  roomInfoRoutes.get('/list', RoomInfoController.viewRoomInfoList);
+  roomInfoRoutes.get('/', RoomInfoController.viewRoomInfoList);
+
+  roomInfoRoutes.put('/:roomInfoIdx', RoomInfoController.modifyRoomInfo);
+
+  roomInfoRoutes.delete('/:roomInfoIdx', RoomInfoController.deleteRoomInfo);
+
+  roomInfoRoutes.get('/:roomInfoIdx', RoomInfoController.viewRoomInfoDetail);
+
+  roomInfoRoutes.get('/search', RoomInfoController.searchRoomInfoList);
 
   // Set url for API group routes
   app.use('/api', apiRoutes);
