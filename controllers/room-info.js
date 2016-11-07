@@ -3,6 +3,7 @@
 
 const models = require('../models');
 const RoomInfo = models.RoomInfoBoard;
+const _ = require('lodash');
 
 exports.viewRoomInfoList = function(req, res) {
   let pageSize, pageStartIndex;
@@ -22,7 +23,7 @@ exports.viewRoomInfoList = function(req, res) {
     offset: pageStartIndex
   }).then(function(roomInfoList) {
     return res.status(200).json({
-      RoomInfo: roomInfoList,
+      roomInfo: roomInfoList,
       statusCode: 1
     });
   }).catch(function(err) {
