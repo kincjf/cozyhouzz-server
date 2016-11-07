@@ -58,6 +58,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: sequelize.NOW
+    },
+    fileRef: {
+      type: DataTypes.INTEGER(10),
+      allowNull: false,
     }
   }, {
     // don't add the timestamp attributes (updatedAt, createdAt)

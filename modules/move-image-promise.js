@@ -18,16 +18,14 @@ var log = require('console-log-level')({
   level: config.logLevel
 });
 
-const staticValue = require('../utils/staticValue');
-
-var previewImage, vrImages, vrImagePaths;
+const value = require('../utils/staticValue');
 
 /**
  *
  */
 exports.makeNewSavePath = Promise.method(function () {
   let newSavePath;
-  if (req.files[staticValue.fieldName.prevImg] || req.files[staticValue.fieldName.vrImg]) {
+  if (req.files[value.fieldName.prevImg] || req.files[value.fieldName.vrImg]) {
     newSavePath = _.toString(Date.now());
 
     return newSavePath;
@@ -67,7 +65,7 @@ exports.movePreviewImage = Promise.method(function (fieldName, newSavePath, reso
       let tmpPath = _.replace(previewImgFile.path, resourcePath + path.sep, "");
 
       // previewImage = _.replace(tmpPath, "/\\/g", "/");    // 될거 같은데 안됨...
-      previewImage = _.split(tmpPath, "\\").join('/');    // 아 ㅅㅂ path문제... 정규표현식으로 해결이 안됨
+      let previewImage = _.split(tmpPath, "\\").join('/');    // 아 ㅅㅂ path문제... 정규표현식으로 해결이 안됨
       // url path이기 때문에 windows에서 작동할 경우 separator(\\) 변환 필요
 
       return previewImage;
@@ -87,9 +85,9 @@ exports.movePreviewImage = Promise.method(function (fieldName, newSavePath, reso
  */
 exports.moveVRImage = Promise.method(function (fieldName, newSavePath, resourcePath) {
   if (newSavePath && req.files[fieldName]) {
-    vrImagePaths = [];
+    let vrImagePaths = [];
 
-    vrImages = {
+    let vrImages = {
       statusCode: 0,    // 아직 변환 전임을 표시함
       // baseDir: _.split(tmpPath, "\\").join('/'),   // request path이기 때문에
       originalImage: []    // 변환전 파일 경로
@@ -114,9 +112,57 @@ exports.moveVRImage = Promise.method(function (fieldName, newSavePath, resourceP
         return new Error("fail to move vrImage file");    // 파일 이동 실패, transaction 중지
       });
     }).then(function () {
-      return vrImages;
+      return {
+        vrImages: vrImages,
+        vrImagePaths: vrImagePaths
+      };
     });
   }
 
   return null;    // 파일 없음(에러는 아님)
+});
+
+exports.saveVRPanoPath = Promise.method(function (newIdx, model) {
+  if (newIdx) {
+    return model.findById(newIdx).then(boardInfo => {
+      let vrImageObj = JSON.parse(boardInfo.VRImages);    // Array[fileName, ...]
+
+      vrImageObj.statusCode = 1;    // 변환 완료
+      vrImageObj.vtourDir = "vtour";    // vtour-normal-custom.config에서 설정함
+      vrImageObj.xmlName = "tour.xml";    // vtour-normal-custom.config에서 설정함
+      vrImageObj.swfName = "tour.swf";    // vtour-normal-custom.config에서 설정함
+      vrImageObj.jsName = "tour.js";    // vtour-normal-custom.config에서 설정함
+
+      vrImageObj.tiles = [];
+
+      let prevImageName = 'thumb.jpg';   // vtour-normal-custom.config에서 설정함
+
+      _(vrImageObj.originalImage).forEach(value => {
+        let extension = path.extname(value);    // imagefile name의 확장자부분만 추출
+        let imageName = path.basename(value, extension);    // imagefile name의 파일 이름만 추출
+        // let imagePath = imageName + extension;
+        // requestpath이기 때문에
+        let tmpDir = path.join(vrImageObj.baseDir, config.krpano.panotour_path, imageName + ".tiles");
+        let tileDir = _.split(tmpDir, "\\").join('/');
+
+        vrImageObj.tiles.push({
+          dir: tileDir,
+          previewImageName: prevImageName,
+          previewImagePath: _.join([tileDir, prevImageName], "/")   // 편하게 쓰라고 만들어준거임
+        });
+      });
+
+      return boardInfo.update({
+        VRImages: JSON.stringify(vrImageObj)    // convert 된 후의 정보가 들어감
+      }).then(result => {
+        return 'saveVRPanoPath : changed VRImages : ' + result.VRImages;
+      }).catch(err => {
+        return new Error('saveVRPanoPath update error: ' + err);
+      });
+    }).catch(function (err) {
+      return new Error('fileById saveVRPanoPath/' + newIdx + ' error: ' + err);
+    });
+  }
+
+  return new Error('no newIdx for saveVRPanoPath');
 });

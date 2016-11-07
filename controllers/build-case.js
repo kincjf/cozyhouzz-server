@@ -195,7 +195,7 @@ exports.createBuildCaseAndVRPano = function (req, res, next) {
   /**
    * String, Array[String]
    */
-  let createBuildCaseDB = Promise.method(function (previewImagePath, vrImages, originalVRImages) {
+  let createBuildCaseDB = Promise.method(function (initWriteDate, previewImagePath, vrImages, originalVRImages) {
 
     const buildCase = {
       memberIdx: req.user.idx,
@@ -206,7 +206,11 @@ exports.createBuildCaseAndVRPano = function (req, res, next) {
       mainPreviewImage: _.isNil(previewImagePath) ? null : previewImagePath,
       buildTotalPrice: req.body.buildTotalPrice == "" ? null : _.toNumber(req.body.buildTotalPrice),
       HTMLText: req.body.HTMLText == "" ? null : req.body.HTMLText,
-      VRImages: _.isNil(vrImages) ? null : JSON.stringify(vrImages)   // 현재는 변환 전임을 표시함.
+      VRImages: _.isNil(vrImages) ? null : JSON.stringify(vrImages),      // 현재는 변환 전임을 표시함.
+      coordinate: req.body.coordinate == "" ? null : req.body.coordinate,    // JSON.stringify() 형식 그대로 오기 때문에
+      regionCategory: req.body.regionCategory == "" ? null : req.body.regionCategory,   // JSON.stringify() 형식 그대로
+      initWriteDate: _.isNil(initWriteDate) ? null : moment(initWriteDate).format("YYYY-MM-DD HH:MM:SS"),   // timestamp로 변환
+      fileRef: _.isNil(initWriteDate) ? null : initWriteDate
     }
 
     return BuildCaseInfoBoard.create(buildCase).then(function (newBuildCase) {
@@ -288,10 +292,10 @@ exports.createBuildCaseAndVRPano = function (req, res, next) {
   makeNewSavePath()
     .then(function (newSavePath) {
       return Promise.join(movePreviewImage(newSavePath), moveVRImage(newSavePath), function (previewImage, vrImages) {
-        return {previewImage: previewImage, vrImages: vrImages};
+        return {initWriteDate: newSavePath, previewImage: previewImage, vrImages: vrImages};
       });
     }).then(function (result) {
-    return createBuildCaseDB(result.previewImage, result.vrImages, vrImagePaths);
+    return createBuildCaseDB(result.initWriteDate, result.previewImage, result.vrImages, vrImagePaths);
   }).then(function (newIdx) {
     return saveVRPanoPath(newIdx);
   }).done(function (result) {
@@ -337,7 +341,7 @@ exports.updateBuildCase = function (req, res, next) {
   let previewImagePath;
   if (req.files['previewImage']) {
     // const previewImagePath = req.files['prewviewImage'][0].originalname;
-    previewImagePath = req.files['previewImage'][0].name;
+    previewImagePath = req.files['previewImage'][0].name;   // path를 바꿔줘야 되지 않나? 확인해보기
   }
 
   // let vrImagePath;
@@ -351,6 +355,7 @@ exports.updateBuildCase = function (req, res, next) {
   //   });
   // }
 
+  // 나중에 VR Tour 변경될 때 promise 형식으로 한번에 바꾸자
   const buildCase = {
     memberIdx: req.user.idx,
     title: req.body.title,
@@ -360,6 +365,11 @@ exports.updateBuildCase = function (req, res, next) {
     mainPreviewImage: _.isNil(previewImagePath) ? null : previewImagePath,
     buildTotalPrice: req.body.buildTotalPrice == "" ? null : _.toNumber(req.body.buildTotalPrice),
     HTMLText: req.body.HTMLText == "" ? null : req.body.HTMLText,
+    // VRImages: _.isNil(vrImages) ? null : JSON.stringify(vrImages),   // 현재는 변환 전임을 표시함.
+    coordinate: req.body.coordinate == "" ? null : req.body.coordinate,    // JSON.stringify() 형식 그대로 오기 때문에
+    regionCategory: req.body.regionCategory == "" ? null : req.body.regionCategory   // JSON.stringify() 형식 그대로
+    // initWriteDate: _.isNil(initWriteDate) ? null : moment(initWriteDate).format("YYYY-MM-DD HH:MM:SS"),   // timestamp로 변환
+    // fileRef: _.isNil(initWriteDate) ? null : initWriteDate
   }
 
   // return Array[0] = affectedRows

@@ -9,10 +9,8 @@ const models = require('../models');
 const Member = models.Member;
 const BusinessMember = models.BusinessMember;
 
-const BIZMEMBER = 2;
-
 // statusCode, memberType, uploadPath등
-const staticValue = require('../utils/staticValue');
+const value = require('../utils/staticValue');
 
 //========================================
 // Member Routes
@@ -114,7 +112,7 @@ exports.updateProfile = function(req, res, next) {
 exports.viewBizProfile = function(req, res, next) {
   const userId = _.toNumber(req.params.memberIdx);
 
-  if ((req.user.idx != userId) || (req.user.memberType != staticValue.memberType.BusinessMember)) {
+  if ((req.user.idx != userId) || (req.user.memberType != value.memberType.BusinessMember)) {
     return res.status(401).json({
       errorMsg: 'You are not authorized to view this user profile.',
       statusCode: 2
@@ -136,11 +134,11 @@ exports.viewBizProfile = function(req, res, next) {
 }
 
 // 사업주 회원 정보 입력, 수정
-// 회사 로고 이미지, 회사 소개 대표 이미지에 대한 file upload 구현해야함.
+// "회사 로고 이미지, 회사 소개 대표 이미지에 대한 file upload 구현해야함."
 exports.updateBizProfile = function(req, res, next) {
   const userId = _.toNumber(req.params.memberIdx);
 
-  if ((req.user.idx != userId) || (req.user.memberType != BIZMEMBER)) {
+  if ((req.user.idx != userId) || (req.user.memberType != value.memberType.BusinessMember)) {
     return res.status(401).json({
       errorMsg: 'You are not authorized to view this user profile.',
       statusCode: 2

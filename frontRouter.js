@@ -31,8 +31,13 @@ const requireLogin = passport.authenticate('local', { session: false });
 
 const buildCaseImageUpload = multer({ storage: multerConfig.buildCaseInfoStorage }).fields([
   { name: 'previewImage', maxCount: 1 }, { name: 'vrImage', maxCount: 15 }]);
+const roomInfoImageUpload = multer({ storage: multerConfig.roomInfoStorage }).fields([
+  { name: 'previewImage', maxCount: 1 }, { name: 'vrImage', maxCount: 15 }]);
 const editorImageUpload = multer({ storage: multerConfig.editorImageStorage })
   .array('editorImage', 10);
+const bizImageUpload = multer({ storage: multerConfig.bizMemberInfoStorage }).fields([
+  { name: 'logoImage', maxCount: 1 }, { name: 'introImage', maxCount: 1 }]);
+
 var testFileUpload = multer({ dest: config.resourcePath + '/tests' }).any();
 
 
@@ -112,8 +117,8 @@ module.exports = function(app) {
   // View business user profile route
   userRoutes.get('/biz/:memberIdx', requireAuth, UserController.viewBizProfile);
 
-  // update business user profile route
-  userRoutes.put('/biz/:memberIdx', requireAuth, UserController.updateBizProfile);
+  // update business user profile route - 이미지 업로드 기능을 추가해야함.
+  userRoutes.put('/biz/:memberIdx', requireAuth, bizImageUpload, UserController.updateBizProfile);
 
 
   //=========================
@@ -219,7 +224,11 @@ module.exports = function(app) {
 
   roomInfoRoutes.get('/', RoomInfoController.viewRoomInfoList);
 
-  roomInfoRoutes.put('/:roomInfoIdx', RoomInfoController.modifyRoomInfo);
+  // create new Room Info from authenticated user
+  roomInfoRoutes.post('/', requireAuth, roomInfoImageUpload, RoomInfoController.createRoomInfoAndVRPano);
+
+  // update Room Info Info from authenticated user
+  roomInfoRoutes.put('/:roomInfoIdx', requireAuth, roomInfoImageUpload, RoomInfoController.updateRoomInfo);
 
   roomInfoRoutes.delete('/:roomInfoIdx', requireAuth, RoomInfoController.deleteRoomInfo);
 
