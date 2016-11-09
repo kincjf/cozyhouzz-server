@@ -8,6 +8,7 @@ const multer = require('multer');
 const path = require('path');
 const fsp = require('fs-promise');
 const Promise = require("bluebird");
+const moment = require("moment");
 
 var env = process.env.NODE_ENV || "development";
 var config = require("../config/main")[env];
@@ -153,6 +154,8 @@ exports.createBuildCaseAndVRPano = function (req, res, next) {
   });
 
   /**
+   * 현재는 VRImage가 무조건 있다는 가정하에 변환 절차가 진행된다.
+   * 나중에는 존재여부를 판단해서 변환절차를 진행할 수 있도록 제작
    * Object
    */
   let moveVRImage = Promise.method(function (newSavePath) {
@@ -209,8 +212,8 @@ exports.createBuildCaseAndVRPano = function (req, res, next) {
       VRImages: _.isNil(vrImages) ? null : JSON.stringify(vrImages),      // 현재는 변환 전임을 표시함.
       coordinate: req.body.coordinate == "" ? null : req.body.coordinate,    // JSON.stringify() 형식 그대로 오기 때문에
       regionCategory: req.body.regionCategory == "" ? null : req.body.regionCategory,   // JSON.stringify() 형식 그대로
-      initWriteDate: _.isNil(initWriteDate) ? null : moment(initWriteDate).format("YYYY-MM-DD HH:MM:SS"),   // timestamp로 변환
-      fileRef: _.isNil(initWriteDate) ? null : initWriteDate
+      initWriteDate: _.isNil(initWriteDate) ? null : moment(_.toNumber(initWriteDate)).format("YYYY-MM-DD HH:MM:SS"),   // timestamp로 변환
+      fileRef: _.isNil(initWriteDate) ? null : _.toNumber(initWriteDate)
     }
 
     return BuildCaseInfoBoard.create(buildCase).then(function (newBuildCase) {
@@ -301,7 +304,7 @@ exports.createBuildCaseAndVRPano = function (req, res, next) {
   }).done(function (result) {
     log.debug(result);
   }, function (err) {
-    log.err(err);
+    log.error(err);
   });
 }
 

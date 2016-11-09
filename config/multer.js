@@ -72,13 +72,14 @@ var bizMemberInfoStorage = multer.diskStorage({
 
     mkdirp(newPath).then(() => {
       log.debug('bizMemberInfoStorage create newPath : ' + newPath);
+
+      callback(null, newPath);
     }, err => {
       if (err) {
         log.error('bizMemberInfoStorage mkdirp error : ' + err);
       }
     });
 
-    callback(null, newPath);
   },
   filename: function (req, file, callback) {
     callback(null, _.toString(Date.now()) + '-' +  file.originalname);
@@ -133,13 +134,14 @@ var editorImageStorage = multer.diskStorage({
 
     mkdirp(newPath).then(() => {
       log.debug('editorImageStorage create newPath : ' + newPath);
+      
+      callback(null, newPath);
     }, err => {
       if (err) {
         log.error('editorImagePath mkdirp error : ' + err);
       }
     });
 
-    callback(null, newPath);
   },
   filename: function (req, file, callback) {
     callback(null, _.toString(Date.now()) + '-' +  file.originalname);

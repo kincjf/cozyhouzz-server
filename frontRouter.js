@@ -78,7 +78,7 @@ module.exports = function(app) {
   apiRoutes.use('/public', publicRoutes);
 
   // upload Image and return path when try to attaching device image
-  publicRoutes.post('/image', editorImageUpload, PublicController.uploadEditorImage);
+  publicRoutes.post('/image', requireAuth, editorImageUpload, PublicController.uploadEditorImage);
 
   // test - upload file and return path when try to attaching device file
   publicRoutes.post('/file/test', testFileUpload, PublicController.uploadFileTest);
