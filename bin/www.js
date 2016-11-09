@@ -44,8 +44,9 @@ models.sequelize.sync({ logging: console.log, force: overwrite }).then(function 
  */
 function setTestDatabase(testDB) {
   if(testDB) {
+    debug('create Member Test Database');
     models.Member.bulkCreate(testDB.member).then(function() {
-      debug('create Member Test Database');
+      debug('create BusinessMember Test Database');
       return models.BusinessMember.bulkCreate(testDB.businessMember);
     }).then(function() {
       debug('create BusinessMember Test Database');
