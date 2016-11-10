@@ -54,7 +54,7 @@ mkdirp(editorImagePath).then(() => {
 });
 
 mkdirp(bizMemberPath).then(() => {
-  log.debug('bizMemberImagePath create newPath : ' + bizMemberImagePath);
+  log.debug('bizMemberImagePath create newPath : ' + bizMemberPath);
 }, err => {
   if (err) {
     log.error('bizMemberImagePath mkdirp error : ' + err);
@@ -68,7 +68,7 @@ mkdirp(bizMemberPath).then(() => {
 
 var bizMemberInfoStorage = multer.diskStorage({
   destination: function (req, file, callback) {
-    let newPath = path.join(ROOT_IMAGE_DIR, value.dirName.bizMemberPath, req.user.email);
+    let newPath = path.join(ROOT_IMAGE_DIR, value.dirName.BIZ_MEMBER, req.user.email);
 
     mkdirp(newPath).then(() => {
       log.debug('bizMemberInfoStorage create newPath : ' + newPath);
@@ -134,7 +134,7 @@ var editorImageStorage = multer.diskStorage({
 
     mkdirp(newPath).then(() => {
       log.debug('editorImageStorage create newPath : ' + newPath);
-      
+
       callback(null, newPath);
     }, err => {
       if (err) {

@@ -125,8 +125,8 @@ exports.createRoomInfoAndVRPano = function (req, res, next) {
       locationInfo: req.body.locationInfo == "" ? null : req.body.locationInfo,
       coordinate: req.body.coordinate == "" ? null : req.body.coordinate,    // JSON.stringify() 형식 그대로 오기 때문에
       regionCategory: req.body.regionCategory == "" ? null : req.body.regionCategory,   // JSON.stringify() 형식 그대로
-      initWriteDate: _.isNil(initWriteDate) ? null : moment(initWriteDate).format("YYYY-MM-DD HH:MM:SS"),      // timestamp로 변환
-      fileRef: _.isNil(initWriteDate) ? null : initWriteDate    // 현재는 notNull임
+      initWriteDate: _.isNil(initWriteDate) ? null : moment(_.toNumber(initWriteDate)).format("YYYY-MM-DD HH:MM:SS"),      // timestamp로 변환
+      fileRef: _.isNil(initWriteDate) ? null : _.toNumber(initWriteDate)    // 현재는 notNull임
       // 나중에 수정시 기존 게시물에 있는 정보를 initWriteDate삭제
     }
 
@@ -175,7 +175,7 @@ exports.createRoomInfoAndVRPano = function (req, res, next) {
   }).done(function (result) {
     log.debug(result);
   }, function (err) {
-    log.err(err);
+    log.error(err);
   });
 }
 
@@ -224,53 +224,68 @@ exports.updateRoomInfo = function(req, res, next) {
     });
   }
 
-  // let previewImagePath = req.files[value.fieldName.prevImg][0].name;
-  let previewImagePath = req.files[value.fieldName.prevImg][0].path;
-
-  // 나중에 VR Tour 변경될 때 promise 형식으로 한번에 바꾸자
-  const roomInfo = {
-    memberIdx: req.user.idx,
-    title: req.body.title,
-    roomType: req.body.roomType == "" ? null : _.toNumber(req.body.roomType),
-    address: req.body.address == "" ? null : req.body.address,    // JSON.stringify(address) 형식 그대로 온다.
-    mainPreviewImage: _.isNil(previewImagePath) ? null : previewImagePath,
-    deposit: req.body.deposit == "" ? null : _.toNumber(req.body.deposit),
-    monthlyRentFee: req.body.monthlyRentFee == "" ? null : _.toNumber(req.body.monthlyRentFee),
-    floor: req.body.floor == "" ? null : _.toNumber(req.body.floor),
-    manageExpense: req.body.manageExpense == "" ? null : _.toNumber(req.body.manageExpense),
-    manageService: req.body.manageService == "" ? null : req.body.manageService,
-    areaSize: req.body.areaSize == "" ? null : _.toNumber(req.body.areaSize),
-    actualSize: req.body.actualSize == "" ? null : _.toNumber(req.body.actualSize),
-    parking: req.body.parking == "" ? null : _.toNumber(req.body.parking),
-    elevator: req.body.elevator == "" ? null : _.toNumber(req.body.elevator),
-    supplyOption: req.body.supplyOption == "" ? null : _.toNumber(req.body.supplyOption),
-    availableDate: req.body.availableDate == "" ? null : req.body.availableDate,
-    HTMLText: req.body.HTMLText == "" ? null : req.body.HTMLText,
-    // VRImages: _.isNil(vrImages) ? null : JSON.stringify(vrImages),   // 현재는 변환 전임을 표시함.
-    locationInfo: req.body.locationInfo == "" ? null : req.body.locationInfo,
-    coordinate: req.body.coordinate == "" ? null : req.body.coordinate,    // JSON.stringify() 형식 그대로 오기 때문에
-    regionCategory: req.body.regionCategory == "" ? null : req.body.regionCategory,   // JSON.stringify() 형식 그대로
-    // initWriteDate: _.isNil(initWriteDate) ? null : moment(initWriteDate).format("YYYY-MM-DD HH:MM:SS"),   // timestamp로 변환
-    // fileRef: _.isNil(initWriteDate) ? null : initWriteDate
-  }
-
-  // return Array[0] = affectedRows
-  RoomInfoBoard.update(roomInfo, {where: {idx: roomInfoIdx}}).then(function (array) {
-    return res.status(200).json({
-      msg: 'changed ' + array[0] + ' rows',
-      statusCode: 1
-    });
-  }).catch(function (err) {
-    if (err) {
-      res.status(400).json({
-        errorMsg: 'RoomInfoBoard Error : No user could be found for this ID.',
-        statusCode: 2
-      });
-      return next(err);
+  let updateRoomInfo = Promise.method(function (initWriteDate, previewImagePath) {
+    // 나중에 VR Tour 변경될 때 promise 형식으로 한번에 바꾸자
+    const roomInfo = {
+      memberIdx: req.user.idx,
+      title: req.body.title,
+      roomType: req.body.roomType == "" ? null : _.toNumber(req.body.roomType),
+      address: req.body.address == "" ? null : req.body.address,    // JSON.stringify(address) 형식 그대로 온다.
+      mainPreviewImage: _.isNil(previewImagePath) ? null : previewImagePath,
+      deposit: req.body.deposit == "" ? null : _.toNumber(req.body.deposit),
+      monthlyRentFee: req.body.monthlyRentFee == "" ? null : _.toNumber(req.body.monthlyRentFee),
+      floor: req.body.floor == "" ? null : _.toNumber(req.body.floor),
+      manageExpense: req.body.manageExpense == "" ? null : _.toNumber(req.body.manageExpense),
+      manageService: req.body.manageService == "" ? null : req.body.manageService,
+      areaSize: req.body.areaSize == "" ? null : _.toNumber(req.body.areaSize),
+      actualSize: req.body.actualSize == "" ? null : _.toNumber(req.body.actualSize),
+      parking: req.body.parking == "" ? null : _.toNumber(req.body.parking),
+      elevator: req.body.elevator == "" ? null : _.toNumber(req.body.elevator),
+      supplyOption: req.body.supplyOption == "" ? null : _.toNumber(req.body.supplyOption),
+      availableDate: req.body.availableDate == "" ? null : req.body.availableDate,
+      HTMLText: req.body.HTMLText == "" ? null : req.body.HTMLText,
+      // VRImages: _.isNil(vrImages) ? null : JSON.stringify(vrImages),   // 현재는 변환 전임을 표시함.
+      locationInfo: req.body.locationInfo == "" ? null : req.body.locationInfo,
+      coordinate: req.body.coordinate == "" ? null : req.body.coordinate,    // JSON.stringify() 형식 그대로 오기 때문에
+      regionCategory: req.body.regionCategory == "" ? null : req.body.regionCategory,   // JSON.stringify() 형식 그대로
+      initWriteDate: _.isNil(initWriteDate) ? null : moment(initWriteDate).format("YYYY-MM-DD HH:MM:SS"),   // timestamp로 변환
+      fileRef: _.isNil(initWriteDate) ? null : initWriteDate
     }
-  });
-}
 
+    // return Array[0] = affectedRows
+    return RoomInfoBoard.update(roomInfo, {where: {idx: roomInfoIdx}}).then(function (array) {
+      return res.status(200).json({
+        msg: 'changed ' + array[0] + ' rows',
+        statusCode: 1
+      });
+    }).catch(function (err) {
+      if (err) {
+        res.status(400).json({
+          errorMsg: 'RoomInfoBoard Error : No user could be found for this ID.',
+          statusCode: 2
+        });
+        return next(err);
+      }
+    });
+  });
+
+  moveImagePromise.makeNewSavePath()
+    .then(function (newSavePath) {
+      return Promise.join(
+        moveImagePromise.movePreviewImage(value.fieldName.prevImg, newSavePath, config.resourcePath), function (previewImage) {
+          return {initWriteDate: newSavePath, previewImage: previewImage};
+        });
+    }).then(function (result) {
+    return updateRoomInfo(result.initWriteDate, result.previewImage);
+  }).done(function (result) {
+    log.debug(result);
+    next();
+  }, function (err) {
+    log.error(err);
+    next(err);
+  });
+
+}
 
 exports.deleteRoomInfo = function(req, res) {
   const roomInfoIdx = req.params.roomInfoIdx;

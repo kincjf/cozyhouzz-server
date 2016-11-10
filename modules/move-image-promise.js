@@ -79,6 +79,8 @@ exports.movePreviewImage = Promise.method(function (fieldName, newSavePath, reso
 
 /**
  * VR 이미지 이동시(multer 기반)
+ * 무조건 새로 업로드 해야한다, 기존에 업로드한 파일을 그대로 처리할 수 있게
+ * 따로 만들던지, 아니면 파일(이미지)관리 모듈을 따로 만들어야 할 것 같다.
  * @param fieldName(ex> fieldName.prevImg)
  * @param newSavePath
  * @param resourcePath(ex> config.prevImg)
@@ -90,7 +92,7 @@ exports.moveVRImage = Promise.method(function (fieldName, newSavePath, resourceP
     let vrImages = {
       statusCode: 0,    // 아직 변환 전임을 표시함
       // baseDir: _.split(tmpPath, "\\").join('/'),   // request path이기 때문에
-      originalImage: []    // 변환전 파일 경로
+      originalImage: []    // 변환된 파일 이름
     };
 
     return Promise.each(req.files[fieldName], function (file, index, length) {

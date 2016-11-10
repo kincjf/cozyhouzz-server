@@ -23,6 +23,7 @@ const passport = require('passport'),
 
 var env = process.env.NODE_ENV || "development";
 var config = require('./config/main')[env];
+const value = require('../utils/staticValue');
 
 // Middleware to require login/auth
 const requireAuth = passport.authenticate('jwt', { session: false });
@@ -30,13 +31,16 @@ const requireLogin = passport.authenticate('local', { session: false });
 
 
 const buildCaseImageUpload = multer({ storage: multerConfig.buildCaseInfoStorage }).fields([
-  { name: 'previewImage', maxCount: 1 }, { name: 'vrImage', maxCount: 15 }]);
+  { name: value.fieldName.prevImg, maxCount: 1 }, { name: value.fieldName.vrImg, maxCount: 15 }]);
+
 const roomInfoImageUpload = multer({ storage: multerConfig.roomInfoStorage }).fields([
-  { name: 'previewImage', maxCount: 1 }, { name: 'vrImage', maxCount: 15 }]);
+  { name: value.fieldName.prevImg, maxCount: 1 }, { name: value.fieldName.vrImg, maxCount: 15 }]);
+
 const editorImageUpload = multer({ storage: multerConfig.editorImageStorage })
-  .array('editorImage', 10);
+  .array(value.fieldName.EDITOR_IMAGE, 10);
+
 const bizImageUpload = multer({ storage: multerConfig.bizMemberInfoStorage }).fields([
-  { name: 'logoImage', maxCount: 1 }, { name: 'introImage', maxCount: 1 }]);
+  { name: value.fieldName.LOGO_IMAGE, maxCount: 1 }, { name: value.fieldName.INTRO_IMAGE, maxCount: 1 }]);
 
 var testFileUpload = multer({ dest: config.resourcePath + '/tests' }).any();
 
@@ -138,7 +142,7 @@ module.exports = function(app) {
   // buildCaseRoutes.post('/', requireAuth,  testImageUpload, BuildCaseController.createBuildCaseAndVRPano);
 
   // create new Build Case Info from authenticated user
-  buildCaseRoutes.post('/', requireAuth,  buildCaseImageUpload, BuildCaseController.createBuildCaseAndVRPano);
+  buildCaseRoutes.post('/', requireAuth, buildCaseImageUpload, BuildCaseController.createBuildCaseAndVRPano);
 
   // update Build Case Info from authenticated user
   buildCaseRoutes.put('/:buildCaseIdx', requireAuth, buildCaseImageUpload, BuildCaseController.updateBuildCase);

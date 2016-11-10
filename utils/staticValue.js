@@ -12,7 +12,7 @@ const statusCode = new Enum({
 const memberType = new Enum({
   'Admin': 0,
   'PublicMember': 1,    // 일반 회원
-  'BusinessMember': 2,    //  시공업체, 나중에 바꾸자(buildingMember)
+  BusinessMember: 2,    //  시공업체, 나중에 바꾸자(buildingMember)
   LEASE_MEMBER: 3    // 임대업체
 });
 
@@ -22,7 +22,10 @@ const uploadPath = {
 
 const fieldName = {
   prevImg: "previewImage",
-  vrImg: "vrImage"
+  vrImg: "vrImage",
+  EDITOR_IMAGE: "editorImage",
+  LOGO_IMAGE: "logoImage",
+  INTRO_IMAGE: "introImage"
 }
 
 const dirName = {
