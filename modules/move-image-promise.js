@@ -23,7 +23,7 @@ const value = require('../utils/staticValue');
 /**
  *
  */
-exports.makeNewSavePath = Promise.method(function () {
+exports.makeNewSavePath = Promise.method(function (req) {
   let newSavePath;
   if (req.files[value.fieldName.prevImg] || req.files[value.fieldName.vrImg]) {
     newSavePath = _.toString(Date.now());
@@ -51,7 +51,7 @@ exports.makeNewSavePath = Promise.method(function () {
  * @param newSavePath
  * @param resourcePath(ex> config.prevImg)
  */
-exports.movePreviewImage = Promise.method(function (fieldName, newSavePath, resourcePath) {
+exports.movePreviewImage = Promise.method(function (req, fieldName, newSavePath, resourcePath) {
 
   if (newSavePath && req.files[fieldName]) {
     let previewImgFile = req.files[fieldName][0];
@@ -85,7 +85,7 @@ exports.movePreviewImage = Promise.method(function (fieldName, newSavePath, reso
  * @param newSavePath
  * @param resourcePath(ex> config.prevImg)
  */
-exports.moveVRImage = Promise.method(function (fieldName, newSavePath, resourcePath) {
+exports.moveVRImage = Promise.method(function (req, fieldName, newSavePath, resourcePath) {
   if (newSavePath && req.files[fieldName]) {
     let vrImagePaths = [];
 

@@ -5,7 +5,8 @@ module.exports = function(sequelize, DataTypes) {
     idx: {
       type: DataTypes.INTEGER(11),
       allowNull: false,
-      primaryKey: true
+      primaryKey: true,
+      autoIncrement: true
     },
     memberIdx: {
       type: DataTypes.INTEGER(10),
