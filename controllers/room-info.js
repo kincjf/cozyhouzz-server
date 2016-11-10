@@ -11,6 +11,13 @@ const moment = require("moment");
 var env = process.env.NODE_ENV || "development";
 var config = require("../config/main")[env];
 
+var log = require('console-log-level')({
+  prefix: function () {
+    return new Date().toISOString()
+  },
+  level: config.logLevel
+});
+
 const value = require('../utils/staticValue');
 const vrpanoPromise = require('../modules/convert-vrpano-promise');
 const moveImagePromise = require('../modules/move-image-promise');
@@ -82,12 +89,12 @@ exports.createRoomInfoAndVRPano = function (req, res, next) {
     });
   }
 
-  if (!req.files[value.fieldName.prevImg]) {
-    return res.status(401).json({
-      errorMsg: 'You must enter an required field! please check file["previewImage"]',
-      statusCode: -1
-    });
-  }
+  // if (!req.files[value.fieldName.prevImg]) {
+  //   return res.status(401).json({
+  //     errorMsg: 'You must enter an required field! please check file["previewImage"]',
+  //     statusCode: -1
+  //   });
+  // }
 
   // req.files["fieldname"[i] - structure example
   // { fieldname: 'myfile',
@@ -161,11 +168,11 @@ exports.createRoomInfoAndVRPano = function (req, res, next) {
     });
   });
 
-  moveImagePromise.makeNewSavePath()
+  moveImagePromise.makeNewSavePath(req)
     .then(function (newSavePath) {
       return Promise.join(
-        moveImagePromise.movePreviewImage(value.fieldName.prevImg, newSavePath, config.resourcePath),
-        moveImagePromise.moveVRImage(value.fieldName.vrImg, newSavePath, config.resourcePath), function (previewImage, vrImages) {
+        moveImagePromise.movePreviewImage(req, value.fieldName.prevImg, newSavePath, config.resourcePath),
+        moveImagePromise.moveVRImage(req, value.fieldName.vrImg, newSavePath, config.resourcePath), function (previewImage, vrImages) {
         return {initWriteDate: newSavePath, previewImage: previewImage, vrImgObj: vrImages};
       });
     }).then(function (result) {
@@ -248,8 +255,8 @@ exports.updateRoomInfo = function(req, res, next) {
       locationInfo: req.body.locationInfo == "" ? null : req.body.locationInfo,
       coordinate: req.body.coordinate == "" ? null : req.body.coordinate,    // JSON.stringify() 형식 그대로 오기 때문에
       regionCategory: req.body.regionCategory == "" ? null : req.body.regionCategory,   // JSON.stringify() 형식 그대로
-      initWriteDate: _.isNil(initWriteDate) ? null : moment(initWriteDate).format("YYYY-MM-DD HH:MM:SS"),   // timestamp로 변환
-      fileRef: _.isNil(initWriteDate) ? null : initWriteDate
+      initWriteDate: _.isNil(initWriteDate) ? null : moment(_.toNumber(initWriteDate)).format("YYYY-MM-DD HH:MM:SS"),   // timestamp로 변환
+      fileRef: _.isNil(initWriteDate) ? null : _.toNumber(initWriteDate)
     }
 
     // return Array[0] = affectedRows
@@ -269,10 +276,10 @@ exports.updateRoomInfo = function(req, res, next) {
     });
   });
 
-  moveImagePromise.makeNewSavePath()
+  moveImagePromise.makeNewSavePath(req)
     .then(function (newSavePath) {
       return Promise.join(
-        moveImagePromise.movePreviewImage(value.fieldName.prevImg, newSavePath, config.resourcePath), function (previewImage) {
+        moveImagePromise.movePreviewImage(req, value.fieldName.prevImg, newSavePath, config.resourcePath), function (previewImage) {
           return {initWriteDate: newSavePath, previewImage: previewImage};
         });
     }).then(function (result) {
