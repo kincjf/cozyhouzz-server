@@ -255,8 +255,8 @@ exports.updateRoomInfo = function(req, res, next) {
       locationInfo: req.body.locationInfo == "" ? null : req.body.locationInfo,
       coordinate: req.body.coordinate == "" ? null : req.body.coordinate,    // JSON.stringify() 형식 그대로 오기 때문에
       regionCategory: req.body.regionCategory == "" ? null : req.body.regionCategory,   // JSON.stringify() 형식 그대로
-      initWriteDate: _.isNil(initWriteDate) ? null : moment(initWriteDate).format("YYYY-MM-DD HH:MM:SS"),   // timestamp로 변환
-      fileRef: _.isNil(initWriteDate) ? null : initWriteDate
+      initWriteDate: _.isNil(initWriteDate) ? null : moment(_.toNumber(initWriteDate)).format("YYYY-MM-DD HH:MM:SS"),   // timestamp로 변환
+      fileRef: _.isNil(initWriteDate) ? null : _.toNumber(initWriteDate)
     }
 
     // return Array[0] = affectedRows
