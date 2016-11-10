@@ -23,7 +23,7 @@ const passport = require('passport'),
 
 var env = process.env.NODE_ENV || "development";
 var config = require('./config/main')[env];
-const value = require('../utils/staticValue');
+const value = require('./utils/staticValue');
 
 // Middleware to require login/auth
 const requireAuth = passport.authenticate('jwt', { session: false });
