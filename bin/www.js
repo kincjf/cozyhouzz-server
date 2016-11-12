@@ -4,9 +4,11 @@ var debug = require('debug')('app');
 var app = require('../app');
 var models = require("../models");
 var http = require('http');
+
 var env = process.env.NODE_ENV || "development";
 var config = require('../config/main')[env];
 
+var setTestDatabase = require('../modules/setTestDatabase');
 var testDB = require('../tests/testDB');
 
 var server;
@@ -38,49 +40,6 @@ models.sequelize.sync({ logging: console.log, force: overwrite }).then(function 
   console.error(err + ' on sequelize.sync error');
   process.exit(1);
 });
-
-/**
- * setting test database, include in member.
- */
-function setTestDatabase(testDB) {
-  if(testDB) {
-    debug('create Member Test Database');
-    models.Member.bulkCreate(testDB.member).then(function() {
-      debug('create BusinessMember Test Database');
-      return models.BusinessMember.bulkCreate(testDB.businessMember);
-    }).then(function() {
-      debug('create BusinessMember Test Database');
-      return models.BuildCaseInfoBoard.bulkCreate(testDB.buildCaseInfoBoard);
-    }).then(function() {
-      debug('create UserConsultInfoBoard Test Database');
-      return models.UserConsultInfoBoard.bulkCreate(testDB.userConsultInfoBoard);
-    }).then(function() {
-      debug('create RoomInfoBoard Test Database');
-      return models.RoomInfoBoard.bulkCreate(testDB.roomInfoBoard);
-    }).then(function() {
-      debug('Complete create Test Database');
-      return models.sequelize.Promise.resolve('Complete create Test Database');
-    }).catch(function(err) {
-      debug('create Test Database Error ' + err);
-      return models.sequelize.Promise.reject(err);
-    });
-  } else {
-    return models.sequelize.Promise.reject('no testDB is found');
-  }
-
-  // if(testDB) {
-  //   models.RoomInfoBoard.bulkCreate(testDB.roomInfoBoard).then(function() {
-  //     debug('create RoomInfoBoard Test Database');
-  //     return models.sequelize.Promise.resolve('Complete create Test Database');
-  //   }).catch(function(err) {
-  //     debug('create Test Database Error ' + err);
-  //     return models.sequelize.Promise.reject(err);
-  //   });
-  // } else {
-  //   return models.sequelize.Promise.reject('no testDB is found');
-  // }
-}
-
 
 /**
  * Normalize a port into a number, string, or false.

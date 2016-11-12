@@ -51,14 +51,15 @@
     "debug": "^2.2.0",
     "mocha": "^3.0.2",
     "node-debug": "^0.1.0",
+    "sequelize-test-setup": "0.0.4",
     "sqlite": "^2.2.0"
   },
   "scripts": {
     "server:dev": "npm i && node ./bin/www.js",
     "server:dev:debug": "npm i && node --debug-brk ./bin/www.js",
-    "server:prod": "npm i && cd .. && NODE_ENV=production forever start backend",
+    "server:prod": "npm i && NODE_ENV=production forever start ./bin/www.js",
     "server:prod:debug": "npm i && NODE_ENV=production node --debug-brk ./bin/www.js",
-    "server:prod-windows": "npm i && cd .. && set NODE_ENV=production forever start backend",
+    "server:prod-windows": "npm i && set NODE_ENV=production forever start start ./bin/www.js",
     "test": "npm run test-unit && npm run test-integration",
     "test-unit": "./node_modules/.bin/mocha tests/unit/*.test.js",
     "test-integration": "./node_modules/.bin/mocha test/sintegration/*.test.js",
