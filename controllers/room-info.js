@@ -125,7 +125,7 @@ exports.createRoomInfoAndVRPano = function (req, res, next) {
       actualSize: req.body.actualSize == "" ? null : _.toNumber(req.body.actualSize),
       parking: req.body.parking == "" ? null : _.toNumber(req.body.parking),
       elevator: req.body.elevator == "" ? null : _.toNumber(req.body.elevator),
-      supplyOption: req.body.supplyOption == "" ? null : _.toNumber(req.body.supplyOption),
+      supplyOption: req.body.supplyOption == "" ? null : req.body.supplyOption,
       availableDate: req.body.availableDate == "" ? null : req.body.availableDate,
       HTMLText: req.body.HTMLText == "" ? null : req.body.HTMLText,
       VRImages: _.isNil(vrImages) ? null : JSON.stringify(vrImages),   // 현재는 변환 전임을 표시함.
