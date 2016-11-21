@@ -61,7 +61,7 @@ exports.register = function(req, res, next) {
     return res.status(400).send({ errorMsg: 'You must enter a password.', statusCode: -1 });
   }
 
-  Member.findOne({
+  return Member.findOne({
     where: {
       email: email
     }
@@ -171,7 +171,7 @@ exports.roleAuthorization = function(role) {
 exports.forgotPassword = function(req, res, next) {
   const email = req.body.email;
 
-  Member.findOne({ where: { email: email }}).then(function(existingUser) {
+  return Member.findOne({ where: { email: email }}).then(function(existingUser) {
     // If user is not found, return error
     if (existingUser == null) {
       res.status(422).json({ errorMsg: 'Your request could not be processed as entered. Please try again.' });
@@ -222,7 +222,7 @@ exports.forgotPassword = function(req, res, next) {
 //========================================
 
 exports.verifyToken = function(req, res, next) {
-  Member.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }).then(function(resetUser) {
+  return Member.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }).then(function(resetUser) {
     // If query returned no results, token expired or was invalid. Return error.
     if(!resetUser) {
       res.status(422).json({ errorMsg: 'Your token has expired. Please attempt to reset your password again.' });

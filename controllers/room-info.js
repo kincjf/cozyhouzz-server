@@ -168,7 +168,7 @@ exports.createRoomInfoAndVRPano = function (req, res, next) {
     });
   });
 
-  moveImagePromise.makeNewSavePath(req)
+  return moveImagePromise.makeNewSavePath(req)
     .then(function (newSavePath) {
       return Promise.join(
         moveImagePromise.movePreviewImage(req, value.fieldName.prevImg, newSavePath, config.resourcePath),
@@ -276,7 +276,7 @@ exports.updateRoomInfo = function(req, res, next) {
     });
   });
 
-  moveImagePromise.makeNewSavePath(req)
+  return moveImagePromise.makeNewSavePath(req)
     .then(function (newSavePath) {
       return Promise.join(
         moveImagePromise.movePreviewImage(req, value.fieldName.prevImg, newSavePath, config.resourcePath), function (previewImage) {

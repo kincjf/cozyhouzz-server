@@ -27,7 +27,7 @@ module.exports = {
     resourcePath: "resources"   // 현재는 상대경로로만 작성해야함.(DB내 정보 삽입때문에)
   },
 
-  production: {
+  "production": {
     "username": "root",
     "password": "hitit113112",
     "database": "cozyhouzz",

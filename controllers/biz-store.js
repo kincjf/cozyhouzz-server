@@ -28,7 +28,7 @@ exports.viewBizProfileList = function(req, res, next) {
 
   // ex> pageSize가 10이고, pageStartIndex가 10이면
   // return 데이터(Index 기준)는 10~19, 총 10개이다.
-  BusinessMember.findAll({
+  return BusinessMember.findAll({
     limit: pageSize,
     offset: pageStartIndex
   }).then(function(bizUserInfos) {
@@ -55,7 +55,7 @@ exports.viewBizProfileList = function(req, res, next) {
 exports.viewBizProfile = function(req, res, next) {
   const userId = _.toNumber(req.params.memberIdx);
 
-  BusinessMember.findById(userId).then(function(user) {
+  return BusinessMember.findById(userId).then(function(user) {
     return res.status(200).json({ bizUserInfo: user, statusCode: 1 });
   }).catch(function(err) {
     if (err) {

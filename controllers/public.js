@@ -86,31 +86,3 @@ exports.uploadFileTest = function(req, res, next) {
     statusCode: 1
   });
 }
-
-
-// exports.uploadEditorImage = function(req, res, next) {
-//
-//   var file_name = sha256(req.body.file); // sha256 hash
-//   var file_ext = req.body.ext;
-//   var img_dir = "uploads/images/"; // image file directory
-//
-//   var hostname = "http://localhost:3001/";
-//   var serverhome = "./";
-//   var request_dir = "images/";
-//
-//   var imagePath = hostname + request_dir + file_name + "." + file_ext; // url
-//   var savePath = serverhome + img_dir + file_name + "." + file_ext;
-//
-//   var data = req.body.file.replace(/^data:image\/\w+;base64,/, "");
-//   var buf = new Buffer(data, 'base64');
-//
-//   fs.writeFile(savePath, buf, function(err) {
-//     if (err) throw err;
-//     console.log('File write completed: ' + savePath);
-//   });
-//
-//   return res.status(200).json({
-//     imagePath: imagePath,
-//     statusCode: 1
-//   });
-// }

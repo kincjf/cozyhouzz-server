@@ -49,7 +49,7 @@ exports.viewBuildCaseList = function (req, res, next) {
 
   // ex> pageSize가 10이고, pageStartIndex가 10이면
   // return 데이터(Index 기준)는 10~19, 총 10개이다.
-  BuildCaseInfoBoard.findAll({
+  return BuildCaseInfoBoard.findAll({
     limit: pageSize,
     offset: pageStartIndex
   }).then(function (buildCases) {
@@ -285,7 +285,7 @@ exports.createBuildCaseAndVRPano = function (req, res, next) {
     return new Error('no buildCaseInfo newIdx');
   });
 
-  makeNewSavePath()
+  return makeNewSavePath()
     .then(function (newSavePath) {
       return Promise.join(movePreviewImage(newSavePath), moveVRImage(newSavePath), function (previewImage, vrImages) {
         return {initWriteDate: newSavePath, previewImage: previewImage, vrImages: vrImages};
@@ -394,7 +394,7 @@ exports.updateBuildCase = function (req, res, next) {
     });
   });
 
-  moveImagePromise.makeNewSavePath()
+  return moveImagePromise.makeNewSavePath()
     .then(function (newSavePath) {
       return Promise.join(
         moveImagePromise.movePreviewImage(value.fieldName.prevImg, newSavePath, config.resourcePath), function (previewImage) {
@@ -428,7 +428,7 @@ exports.viewBuildCase = function (req, res, next) {
 
   const buildCaseIdx = _.toNumber(req.params.buildCaseIdx);
 
-  BuildCaseInfoBoard.findById(buildCaseIdx).then(function (buildCase) {
+  return BuildCaseInfoBoard.findById(buildCaseIdx).then(function (buildCase) {
     return res.status(200).json({buildCaseInfo: buildCase, statusCode: 1});
   }).catch(function (err) {
     if (err) {
@@ -449,7 +449,7 @@ exports.viewBuildCase = function (req, res, next) {
  * @param next
  */
 exports.searchBuildCase = function (req, res, next) {
-  BuildCaseInfoBoard.findAll().then(function (buildCases) {
+  return BuildCaseInfoBoard.findAll().then(function (buildCases) {
     res.status(200).json({buildCaseInfo: buildCases, statusCode: 1});
     return next();
   }).catch(function (err) {
@@ -488,7 +488,7 @@ exports.deleteBuildCase = function (req, res, next) {
   const buildCaseIdx = _.toNumber(req.params.buildCaseIdx);
 
   // return numOfRows = The number of destroyed rows
-  BuildCaseInfoBoard.destroy({where: {idx: buildCaseIdx}}).then(function (numOfRows) {
+  return BuildCaseInfoBoard.destroy({where: {idx: buildCaseIdx}}).then(function (numOfRows) {
     res.status(200).json({
       msg: 'deleted ' + numOfRows + ' rows',
       statusCode: 1

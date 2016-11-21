@@ -26,7 +26,7 @@ exports.viewProfile = function(req, res, next) {
     });
   }
 
-  Member.findById(userId).then(function(user) {
+  return Member.findById(userId).then(function(user) {
     res.status(200).json({ user: user, statusCode: 1 });
     return next();
   }).catch(function(err) {
@@ -72,7 +72,7 @@ exports.updateProfile = function(req, res, next) {
   };
 
   // return Array[0] = affectedRows
-  Member.update(changes, {where: { idx: userId }}).then(function(array) {
+  return Member.update(changes, {where: { idx: userId }}).then(function(array) {
     if(array[0] == 1) {   // 변경 된 경우
       // email, pwd이 바뀐 경우
       if(!_.eq(current.email, changes.email) || !_.eq(current.password, changes.password)) {
@@ -152,7 +152,7 @@ exports.updateBizProfile = function(req, res, next) {
     });
   }
 
-  BusinessMember.update({
+  return BusinessMember.update({
     companyName: req.body.companyName,
     ownerName: req.body.ownerName,
     bizRegNo: req.body.bizRegNo,
