@@ -22,8 +22,8 @@ dotenv.load();    // loading .env and write to process.env
 // new version of line
 //app.use(bodyParser.urlencoded({ extended: true }));
 //app.use(bodyParser.json());
-app.use(bodyParser.json({limit: '30mb'}));
-app.use(bodyParser.urlencoded({limit: '30mb', extended: true}));
+app.use(bodyParser.json({limit: '100mb'}));
+app.use(bodyParser.urlencoded({limit: '100mb', extended: true}));
 
 app.use(express.static(__dirname + "/" + config.resourcePath));
 app.use('/config', express.static(__dirname + '/config/publish'));

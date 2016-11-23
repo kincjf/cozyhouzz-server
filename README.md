@@ -14,6 +14,8 @@ Google Sheet(RealRoom_개발자료 : Server-App 통신방법)을 참고 바람.
 
 구동 후, test route를 이용하여 작동 확인 가능
 
+`!! 꼭 파일실행권한 (chmod) 를 바꿔줘야 한다!!!`
+
 
 ## Available APIs
 

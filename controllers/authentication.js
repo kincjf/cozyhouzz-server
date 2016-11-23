@@ -12,7 +12,8 @@ const crypto = require('crypto'),
   mailchimp = require('../config/mailchimp'),
   config = require('../config/main'),
 
-  genToken = require("../utils/genToken");
+  genToken = require("../utils/genToken"),
+  value = require("../utils/staticValue");
 
 // statusCode나 memberType을 enum으로 처리하자
 const BIZMEMBER = 2;
@@ -46,7 +47,7 @@ exports.register = function(req, res, next) {
   // Check for registration errors
   const email = req.body.email;
   const password = req.body.password;
-  const memberType = req.body.memberType;
+  const memberType = _.toNumber(req.body.memberType);
 
   // Return error if no email provided
   if (!email) {
@@ -81,7 +82,7 @@ exports.register = function(req, res, next) {
       memberType: memberType
     };
 
-    if (_.eq(memberType, BIZMEMBER)) {    // biz회원 가입시, transaction 때문에 나눠놨음
+    if (_.eq(memberType, BIZMEMBER) || _.eq(memberType, value.memberType.LEASE_MEMBER)) {    // biz회원 가입시, transaction 때문에 나눠놨음
       return models.sequelize.transaction(function (t) {
         return Member.create(user, {transaction: t}).then(function(newUser) {
           // Subscribe member to Mailchimp list
