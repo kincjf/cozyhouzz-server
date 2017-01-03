@@ -353,6 +353,13 @@ exports.deleteRoomInfo = function(req, res) {
 exports.viewRoomInfoDetail = function(req, res) {
   const roomInfoIdx = req.params.roomInfoIdx;
 
+  if (!req.params.roomInfoIdx || !_.isNumber(req.params.roomInfoIdx)) {
+    return res.status(401).json({
+      errorMsg: 'You must enter an required param! please check :roomInfoIdx',
+      statusCode: -1
+    });
+  }
+
   return RoomInfoBoard.findOne({
     where: {
       idx: roomInfoIdx
@@ -371,9 +378,7 @@ exports.viewRoomInfoDetail = function(req, res) {
 }
 
 exports.searchRoomInfoList = function(req, res) {
-  let pageSize, pageStartIndex,
-    city = _.toNumber(req.query.city),
-    query = req.query.query;
+  let pageSize, pageStartIndex, city, query;
 
   // 페이지 정보 확인
   if (!req.query.pageSize || !req.query.pageStartIndex) {
@@ -387,6 +392,8 @@ exports.searchRoomInfoList = function(req, res) {
 
   if (!req.query.city) {
     city = value.cityName.Jeonju;
+  } else {
+    city = _.toNumber(req.query.city);
   }
 
   return RoomInfoBoard.findAll({

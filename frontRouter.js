@@ -151,7 +151,7 @@ module.exports = function(app) {
   buildCaseRoutes.delete('/:buildCaseIdx', requireAuth, BuildCaseController.deleteBuildCase);
 
   // search Build Case Info (must get query(?query={}) param)
-  buildCaseRoutes.get('/search', BuildCaseController.searchBuildCase);
+  apiRoutes.get('/search/build-case', BuildCaseController.searchBuildCase);
 
   //=========================
   // Biz Store Route - 업체 목록 조회
@@ -236,9 +236,9 @@ module.exports = function(app) {
 
   roomInfoRoutes.delete('/:roomInfoIdx', requireAuth, RoomInfoController.deleteRoomInfo);
 
-  roomInfoRoutes.get('/:roomInfoIdx', RoomInfoController.viewRoomInfoDetail);
+  roomInfoRoutes.get('/:roomInfoIdx/', RoomInfoController.viewRoomInfoDetail);
 
-  roomInfoRoutes.get('/search', RoomInfoController.searchRoomInfoList);
+  apiRoutes.get('/search/room', RoomInfoController.searchRoomInfoList);
 
   // Set url for API group routes
   app.use('/api', apiRoutes);
