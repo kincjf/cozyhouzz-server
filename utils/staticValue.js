@@ -28,6 +28,12 @@ const fieldName = {
   INTRO_IMAGE: "introImage"
 }
 
+const cityName = new Enum({
+  'Jeonju': 1,
+  'Iksan': 2,
+  'Gunsan': 3
+});
+
 const dirName = {
   EDITOR_IMAGE: "editor",
   BUILD_CASE_INFO: "buildCaseInfo",
@@ -40,5 +46,6 @@ module.exports = {
   memberType,
   uploadPath,
   fieldName,
-  dirName
+  dirName,
+  cityName
 };

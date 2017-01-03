@@ -89,6 +89,13 @@ exports.createRoomInfoAndVRPano = function (req, res, next) {
     });
   }
 
+  if (!req.body.city) {
+    return res.status(401).json({
+      errorMsg: 'You must enter an required field! please check city',
+      statusCode: -1
+    });
+  }
+
   // if (!req.files[value.fieldName.prevImg]) {
   //   return res.status(401).json({
   //     errorMsg: 'You must enter an required field! please check file["previewImage"]',
@@ -115,6 +122,7 @@ exports.createRoomInfoAndVRPano = function (req, res, next) {
       title: req.body.title,
       roomType: req.body.roomType == "" ? null : _.toNumber(req.body.roomType),
       address: req.body.address == "" ? null : req.body.address,    // JSON.stringify(address) 형식 그대로 온다.
+      city: req.body.city == "" ? null : _.toNumber(req.body.city),
       mainPreviewImage: _.isNil(previewImagePath) ? null : previewImagePath,
       deposit: req.body.deposit == "" ? null : _.toNumber(req.body.deposit),
       monthlyRentFee: req.body.monthlyRentFee == "" ? null : _.toNumber(req.body.monthlyRentFee),
@@ -224,6 +232,13 @@ exports.updateRoomInfo = function(req, res, next) {
     });
   }
 
+  if (!req.body.city) {
+    return res.status(401).json({
+      errorMsg: 'You must enter an required field! please check city',
+      statusCode: -1
+    });
+  }
+
   if (!req.files[value.fieldName.prevImg]) {
     return res.status(401).json({
       errorMsg: 'You must enter an required field! please check file["previewImage"]',
@@ -238,6 +253,7 @@ exports.updateRoomInfo = function(req, res, next) {
       title: req.body.title,
       roomType: req.body.roomType == "" ? null : _.toNumber(req.body.roomType),
       address: req.body.address == "" ? null : req.body.address,    // JSON.stringify(address) 형식 그대로 온다.
+      city: req.body.city == "" ? null : _.toNumber(req.body.city),
       mainPreviewImage: _.isNil(previewImagePath) ? null : previewImagePath,
       deposit: req.body.deposit == "" ? null : _.toNumber(req.body.deposit),
       monthlyRentFee: req.body.monthlyRentFee == "" ? null : _.toNumber(req.body.monthlyRentFee),
@@ -355,7 +371,9 @@ exports.viewRoomInfoDetail = function(req, res) {
 }
 
 exports.searchRoomInfoList = function(req, res) {
-  let pageSize, pageStartIndex, query = req.query.query;
+  let pageSize, pageStartIndex,
+    city = _.toNumber(req.query.city),
+    query = req.query.query;
 
   // 페이지 정보 확인
   if (!req.query.pageSize || !req.query.pageStartIndex) {
@@ -367,10 +385,16 @@ exports.searchRoomInfoList = function(req, res) {
     pageStartIndex = _.toNumber(req.query.pageStartIndex);
   }
 
+  if (!req.query.city) {
+    city = value.cityName.Jeonju;
+  }
+
   return RoomInfoBoard.findAll({
     limit: pageSize,
     offset: pageStartIndex,
-    //where: {}
+    where: {
+      city: city
+    }
   }).then(function(roomInfoList) {
     return res.status(200).json({
       RoomInfo: roomInfoList,

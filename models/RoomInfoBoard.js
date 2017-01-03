@@ -77,6 +77,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(500),
       allowNull: true
     },
+    city: {
+      type: DataTypes.INTEGER(11),
+      allowNull: false
+    },
     locationInfo: {
       type: DataTypes.STRING(1000),
       allowNull: true
