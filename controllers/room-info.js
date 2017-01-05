@@ -353,7 +353,7 @@ exports.deleteRoomInfo = function(req, res) {
 exports.viewRoomInfoDetail = function(req, res) {
   const roomInfoIdx = req.params.roomInfoIdx;
 
-  if (!req.params.roomInfoIdx || !_.isNumber(req.params.roomInfoIdx)) {
+  if (!req.params.roomInfoIdx) {
     return res.status(401).json({
       errorMsg: 'You must enter an required param! please check :roomInfoIdx',
       statusCode: -1
