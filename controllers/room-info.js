@@ -148,7 +148,8 @@ exports.createRoomInfoAndVRPano = function (req, res, next) {
     return RoomInfoBoard.create(roomInfo).then(function (newRoomInfo) {
       res.status(201).json({
         roomInfo: newRoomInfo,
-        statusCode: value.statusCode.RequestActionCompleted_20x
+        statusCode: 1
+        // statusCode: value.statusCode.RequestActionCompleted_20x
       });
 
       return [originalVRImages, newRoomInfo.idx];
